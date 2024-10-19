@@ -58,10 +58,10 @@ plugin = True
 plugin_dir = "projects/mmdet3d_plugin/"
 dist_params = dict(backend="nccl")
 log_level = "INFO"
-work_dir = None
+work_dir = "work_dirs/sparse4dv3_temporal_r50_1x8_bs6_256x704"
 
 total_batch_size = 48
-num_gpus = 8
+num_gpus = 1
 batch_size = total_batch_size // num_gpus
 num_iters_per_epoch = int(28130 // (num_gpus * batch_size))
 num_epochs = 100
@@ -128,7 +128,7 @@ model = dict(
         with_cp=True,
         out_indices=(0, 1, 2, 3),
         norm_cfg=dict(type="BN", requires_grad=True),
-        pretrained="ckpt/resnet50-19c8e357.pth",
+        pretrained="ckpts/resnet50-19c8e357.pth",
     ),
     img_neck=dict(
         type="FPN",
@@ -153,7 +153,7 @@ model = dict(
             type="InstanceBank",
             num_anchor=900,
             embed_dims=embed_dims,
-            anchor="nuscenes_kmeans900.npy",
+            anchor="_nuscenes_kmeans900.npy",
             anchor_handler=dict(type="SparseBox3DKeyPointsGenerator"),
             num_temp_instances=600 if temporal else -1,
             confidence_decay=0.6,
@@ -295,8 +295,8 @@ model = dict(
 # ================== data ========================
 dataset_type = "NuScenes3DDetTrackDataset"
 data_root = "data/nuscenes/"
-anno_root = "data/nuscenes_cam/"
-anno_root = "data/nuscenes_anno_pkls/"
+# anno_root = "data/nuscenes_cam/"
+anno_root = "data/nuscenes/nusc_sparse4d_pkls/"
 file_client_args = dict(backend="disk")
 
 img_norm_cfg = dict(
